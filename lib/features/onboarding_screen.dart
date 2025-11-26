@@ -13,20 +13,22 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int _index = 0;
+  bool _isTicked = false;
+
 
 final pages = const [
   OnboardingPageData(
-    title: "Casual connections",
-    desc: "Meet people nearby without pressure.",
+    title: "Duck the pressure. Keep it casual.",
+    desc: "Duck (on duckBuddy): To intentionally avoid emotional pressure, long-term commitments, and relationship DRAMA",
     anim: "assets/animations/CANARD.json",
   ),
   OnboardingPageData(
-    title: "Swipe & chat",
-    desc: "Start conversations instantly.",
+    title: "Find your 'duck'Buddy",
+    desc: "Swipe through profiles, find your vibe. duckBuddy (on duckBuddy): A person who helps you in ducking, as they are here for ducking too!",
     anim: "assets/animations/duck.json",
   ),
   OnboardingPageData(
-    title: "Only 18+, real users",
+    title: "18+, real users",
     desc: "Safe, verified, and controlled.",
     anim: "assets/animations/verification.json",
   ),
@@ -35,7 +37,14 @@ final pages = const [
 
   @override
 Widget build(BuildContext context) {
-  return Scaffold(
+  return AnimatedContainer(
+      duration: const Duration(milliseconds: 800), // slow smooth transition
+      color: _index == pages.length - 1
+      ? (_isTicked ? Colors.yellow : Colors.red)
+      : Colors.yellow,
+  curve: Curves.easeInOut,
+  child: Scaffold(
+     backgroundColor: Colors.transparent,
     body: SafeArea(
       child: Column(
         children: [
@@ -44,8 +53,17 @@ Widget build(BuildContext context) {
               controller: _controller,
               itemCount: pages.length,
               onPageChanged: (i) => setState(() => _index = i),
-              itemBuilder: (_, i) => OnboardingPage(data: pages[i]),
-            ),
+             itemBuilder: (_, i) => OnboardingPage(
+                                        data: pages[i],
+                                        isLast: i == pages.length - 1,
+                                        isTicked: _isTicked,
+                                        onTickChanged: (val) {
+                                            setState(() {
+                                            _isTicked = val;
+                                            });
+                                        },
+                                        ),
+            ),      
           ),
 
           // Dots Indicator
@@ -58,7 +76,7 @@ Widget build(BuildContext context) {
                 width: _index == i ? 18 : 8,
                 height: 8,
                 decoration: BoxDecoration(
-                  color: _index == i ? Colors.white : Colors.white30,
+                  color: _index == i ? Colors.black : Colors.white30,
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -72,12 +90,6 @@ Widget build(BuildContext context) {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Row(
               children: [
-                TextButton(
-                  onPressed: () {
-                    // TODO: Navigate to Welcome/Login screen
-                  },
-                  child: const Text("Skip"),
-                ),
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () {
@@ -104,6 +116,6 @@ Widget build(BuildContext context) {
         ],
       ),
     ),
-  );
+  ));
 }
 }
