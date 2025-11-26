@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'onboarding_model.dart';
+import 'package:flutter/services.dart';
+
 
 class OnboardingPage extends StatelessWidget {
   final OnboardingPageData data;
@@ -51,6 +53,7 @@ class OnboardingPage extends StatelessWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(8),
               onTap: () {
+                HapticFeedback.selectionClick(); 
                 onTickChanged(!isTicked);
               },
               child: Row(
